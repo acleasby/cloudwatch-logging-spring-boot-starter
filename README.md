@@ -71,6 +71,7 @@ You can specify, that CloudWatch appender should be used for logging in Logback 
     <springProperty name="logGroup" source="logging.cloudwatch.log-group"/>
     <springProperty name="logStream" source="logging.cloudwatch.log-stream"/>
     <springProperty name="awsRegion" source="logging.cloudwatch.region"/>
+    <springProperty name="logPattern" source="logging.cloudwatch.pattern"/>
 
     <!-- for dev profile print logs in console -->
     <springProfile name="dev">
@@ -94,7 +95,7 @@ You can specify, that CloudWatch appender should be used for logging in Logback 
             <logGroup>${logGroup:- }</logGroup>
             <logStream>${logStream:- }</logStream>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>%d %-5level --- [%15.15thread] %-40.40logger{40} : %msg%n</pattern>
+                <pattern>${logPattern:-%msg%n}</pattern>
             </layout>
         </appender>
 
@@ -151,8 +152,8 @@ You can manually create _CloudWatchLogbackConfigurationAdapter_ (or override it)
 Create with default settings (retrieved from _logging.cloudwatch.*_ parameters):
 ```java
 @Bean
-public CloudWatchLogbackConfigurationAdapter cloudWatchLogbackConfigurationAdapter() {
-    return new CloudWatchLogbackConfigurationAdapter();
+public CloudWatchLogbackConfiguration cloudWatchLogbackConfiguration() {
+    return new CloudWatchLogbackConfiguration();
 }
 ```
 
@@ -162,8 +163,8 @@ Create with custon settings:
 private CloudWatchProperties properties;
 
 @Bean
-public CloudWatchLogbackConfigurationAdapter cloudWatchLogbackConfigurationAdapter() {
-    return CloudWatchLogbackConfigurationAdapter.of(properties);
+public CloudWatchLogbackConfiguration cloudWatchLogbackConfiguration() {
+    return new CloudWatchLogbackConfiguration(properties);
 }
 ```
 
