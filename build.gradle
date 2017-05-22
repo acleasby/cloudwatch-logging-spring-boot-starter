@@ -1,9 +1,10 @@
 group 'com.intapp.platform'
-version '0.1'
+version '0.7'
 
 buildscript {
     ext {
         springBootVersion = '1.5.3.RELEASE'
+        artifactoryPluginVersion = '4.4.17'
     }
 
     repositories {
@@ -14,14 +15,23 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$artifactoryPluginVersion"
     }
 }
 
 apply plugin: 'java'
 apply plugin: "org.springframework.boot"
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
 
 sourceCompatibility = 1.8
+
+ext {
+    awsCloudwatchVersion = '1.11.18'
+    guavaVersion = '21.0'
+    lombokVersion = '1.16.16'
+}
 
 repositories {
     mavenCentral()
@@ -29,4 +39,42 @@ repositories {
 
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter'
+
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-cloudwatch', version: "$awsCloudwatchVersion"
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-logs', version: "$awsCloudwatchVersion"
+
+    compile group: 'com.google.guava', name: 'guava', version: "$guavaVersion"
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: "$lombokVersion"
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        loggingArtifact(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        repository {
+            repoKey = "${artifactory_repo}"
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+        }
+        defaults {
+            // Reference to Gradle publications defined in the build script.
+            publications('loggingArtifact')
+            publishArtifacts = true
+            // Publish generated POM files to Artifactory (true by default)
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'gradle-dev-local'
+    }
 }
