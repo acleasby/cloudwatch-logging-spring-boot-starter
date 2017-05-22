@@ -54,7 +54,7 @@ public class CloudWatchLogbackConfiguration implements EnvironmentAware {
     }
 
     // TODO: don't treat as bean
-    @Bean(initMethod = "start")
+    @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean(AmazonCloudWatchAppender.class)
     public Appender<ILoggingEvent> cloudWatchAppender(AWSLogsClient awsLogsClient) {
         LoggerContext context = getLoggerContext();
@@ -94,7 +94,6 @@ public class CloudWatchLogbackConfiguration implements EnvironmentAware {
         // so building CloudWatchProperties from environment manually instead of @ConfigurationProperties/@Autowired
 
         if (cloudWatchProperties == null) {
-            System.out.println("CLOUDWATCH: properties is null");
             cloudWatchProperties = CloudWatchProperties.from(environment);
         }
     }

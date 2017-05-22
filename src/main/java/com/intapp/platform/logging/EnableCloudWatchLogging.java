@@ -7,7 +7,8 @@ import java.lang.annotation.*;
 /**
  * Enables CloudWatch logging for project.
  * <br/>
- * By default, logging will be enabled only in "cloud" profile.
+ * By default, logging will be enabled for all profiles, but you can modify this behavior,
+ * specifying profiles, for which logging should be enabled as annotation attribute(s).
  * CloudWatch logging can be enabled/disabled setting property {@code logging.cloudwatch.enabled}
  */
 @Target(ElementType.TYPE)
@@ -19,7 +20,7 @@ public @interface EnableCloudWatchLogging {
     /**
      * Profile, for which CloudWatch logging should be enabled
      */
-    String value() default "cloud";
+    String value();
 
     /**
      * List of profiles, for which CloudWatch logging should be enabled
