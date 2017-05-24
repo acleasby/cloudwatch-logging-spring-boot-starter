@@ -1,6 +1,5 @@
 package com.intapp.platform.logging;
 
-import com.google.common.collect.ObjectArrays;
 import com.intapp.platform.logging.logback.CloudWatchLogbackConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.EnvironmentAware;
@@ -36,14 +35,8 @@ public class CloudWatchLoggingImportSelector implements ImportSelector, Environm
             return false;
         }
 
-        // annotation enable
-        if (!attributes.getBoolean("enabled")) {
-            log.debug("CLOUDWATCH logging is disabled via annotation parameter. Skipping...");
-            return false;
-        }
-
-        // profiles check: merge "value" profile with "profiles" list
-        String[] selectedProfiles = ObjectArrays.concat(attributes.getStringArray("profiles"), attributes.getString("value"));
+        // profiles check
+        String[] selectedProfiles = attributes.getStringArray("value");
         return environment.acceptsProfiles(selectedProfiles);
     }
 

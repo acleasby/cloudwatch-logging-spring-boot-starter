@@ -18,17 +18,7 @@ import java.lang.annotation.*;
 @Import({CloudWatchLoggingImportSelector.class})
 public @interface EnableCloudWatchLogging {
     /**
-     * Profile, for which CloudWatch logging should be enabled
+     * Profiles, for which CloudWatch logging should be enabled
      */
-    String value();
-
-    /**
-     * List of profiles, for which CloudWatch logging should be enabled
-     */
-    String[] profiles() default {};
-
-    /**
-     * Enables/disables CloudWatch logging
-     */
-    boolean enabled() default true;
+    String[] value();
 }

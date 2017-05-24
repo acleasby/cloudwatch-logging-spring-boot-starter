@@ -113,34 +113,19 @@ Main benefit of such approach:
 
 ### @EnableCloudWatchLogging annotation
 Placing _@EnableCloudWatchLogging_ on main class of your application will enable CloudWatch logging for your service
-in _cloud_ profile.
+in specified profile(s).
 ```java
 @SpringBootApplication
-@EnableCloudWatchLogging
+@EnableCloudWatchLogging("production")                  // one profile
+@EnableCloudWatchLogging({"cloud", "prod"})             // any of profiles
 public class MainApplication {
 }
 ```
-CloudWatch logging can be enabled/disabled via annotation attribute:
-```java
-@SpringBootApplication
-@EnableCloudWatchLogging(enabled = false)       // default value - true
-public class MainApplication {
-}
-```
-or configuration parameter:
+CloudWatch logging can be enabled/disabled via configuration parameter:
 ```yaml
 logging:
   cloudwatch:
     enabled: false # default value - unspecified (considered as true)
-```
-
-@EnableCloudWatchLogging also allows to specify _profiles_ for which CloudWatch logging should be enabled:
-```java
-@SpringBootApplication
-@EnableCloudWatchLogging("production")                  // one profile, default value - "cloud"
-@EnableCloudWatchLogging(profiles = {"cloud", "prod"})  // any of profiles, default value - {}
-public class MainApplication {
-}
 ```
 
 Main benefit of such approach:
