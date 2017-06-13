@@ -86,21 +86,38 @@ public class AmazonCloudWatchAppender extends UnsynchronizedAppenderBase<ILoggin
     @Override
     public void start() {
         if (StringUtils.isNullOrEmpty(logGroup)) {
-            addWarn(format("Log group name not set for appender %s", getName()));
+            String message = format("CloudWatch log group name is not set for appender %s", getName());
+
+            addWarn(message);
+            System.err.println(message);    // duplicating error message in console as there can be no more appenders
             return;
         }
+
         if (StringUtils.isNullOrEmpty(logStream)) {
-            addWarn(format("Log stream name not set for appender %s", getName()));
+            String message = format("CloudWatch log stream name is not set for appender %s", getName());
+
+            addWarn(message);
+            System.err.println(message);    // duplicating error message in console as there can be no more appenders
             return;
         }
         if (RegionUtils.getRegion(region) == null) {
             region = DEFAULT_REGION;
-            addWarn(format("Region not set for appender, falling back to %s", region));
+
+            String message = format("AWS region is not set for appender, falling back to %s", region);
+
+            addWarn(message);
+            System.err.println(message);    // duplicating error message in console as there can be no more appenders
         }
+
         if (layout == null) {
             layout = new EchoLayout<>();
-            addWarn(format("No layout set for appender, falling back to %s", layout));
+
+            String message = format("No layout set for CloudWatch appender, falling back to %s", layout);
+
+            addWarn(message);
+            System.err.println(message);    // duplicating error message in console as there can be no more appenders
         }
+
         if (awsLogsClient == null) {
             awsLogsClient = new AWSLogsClient();
         }

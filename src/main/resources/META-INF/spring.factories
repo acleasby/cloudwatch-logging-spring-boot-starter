@@ -1,3 +1,2 @@
 # This file is used to enabled Spring Boot autoconfiguration on dependency presence.
-# It is intentionally left blank, to force developer explicitly specify conditions,
-# under which CloudWatch Logging should be enabled
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.intapp.platform.logging.CloudWatchLoggingAutoConfiguration

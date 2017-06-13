@@ -125,7 +125,7 @@ CloudWatch logging can be enabled/disabled via configuration parameter:
 ```yaml
 logging:
   cloudwatch:
-    enabled: false # default value - unspecified (considered as true)
+    enabled: false # default value - unspecified (considered as false)
 ```
 
 Main benefit of such approach:
@@ -133,16 +133,7 @@ Main benefit of such approach:
 
 
 ### Manual bean registration
-You can manually create _CloudWatchLogbackConfigurationAdapter_ (or override it) to have more control of logging behavior.
-Create with default settings (retrieved from _logging.cloudwatch.*_ parameters):
-```java
-@Bean
-public CloudWatchLogbackConfiguration cloudWatchLogbackConfiguration() {
-    return new CloudWatchLogbackConfiguration();
-}
-```
-
-Create with custon settings:
+You can manually create _CloudWatchLogbackConfigurationAdapter_ (or override it) to have more control of logging behavior:
 ```java
 @Autowired  // configure as you wish
 private CloudWatchProperties properties;

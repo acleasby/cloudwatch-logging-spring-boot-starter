@@ -10,28 +10,23 @@ import com.amazonaws.services.logs.AWSLogsClient;
 import com.intapp.platform.logging.CloudWatchProperties;
 import com.intapp.platform.logging.logback.appender.AmazonCloudWatchAppender;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
 
-import static com.intapp.platform.logging.CloudWatchLoggingImportSelector.ENABLE_PROPERTY;
-
-@Order(Ordered.HIGHEST_PRECEDENCE)
-@Configuration
-@ConditionalOnProperty(name = ENABLE_PROPERTY, matchIfMissing = true)
-public class CloudWatchLogbackConfiguration implements EnvironmentAware {
+/**
+ * Configuration of CloudWatch logging for Logback backend.
+ * <p>
+ * <b>NOTE:</b> this class is intentionally isn't declared as {@link org.springframework.context.annotation.Configuration}
+ * to prevent it from being accidentally added to Spring context by {@code ComponentScan},
+ * enabled in other service from <i>com.intapp.platform</i> package
+ */
+public class CloudWatchLogbackConfiguration {
     private CloudWatchProperties cloudWatchProperties;
 
-    public CloudWatchLogbackConfiguration() {
-    }
-
+    @Autowired
     public CloudWatchLogbackConfiguration(CloudWatchProperties properties) {
         this.cloudWatchProperties = properties;
     }
@@ -86,16 +81,6 @@ public class CloudWatchLogbackConfiguration implements EnvironmentAware {
         rootLogger.addAppender(appender);
 
         rootLogger.warn("LOGBACK: [{}] APPENDER WAS ADDED!", appender.getName());
-    }
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        // we can't guarantee, that @ComponentScan will be enabled for this package,
-        // so building CloudWatchProperties from environment manually instead of @ConfigurationProperties/@Autowired
-
-        if (cloudWatchProperties == null) {
-            cloudWatchProperties = CloudWatchProperties.from(environment);
-        }
     }
 
     protected LoggerContext getLoggerContext() {
